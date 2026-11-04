@@ -1,0 +1,70 @@
+{
+  "Name": "HMMWV MB Tire",
+  "Type": "Tire",
+  "Template": "MBTire",
+  "Mass": 70.5,
+  "Geometry": {
+    "Radius": [
+      0.388,
+      0.49,
+      0.498,
+      0.49,
+      0.388
+    ],
+    "Offset": [
+      -0.1925,
+      -0.12,
+      0,
+      0.12,
+      0.1925
+    ],
+    "Number Divisions": 80,
+    "Rim Radius": 0.29845
+  },
+  "Spring Properties": {
+    "Type": "Per Spring",
+    "Radial": [
+      5750000.0,
+      5750.0
+    ],
+    "Circumferential": [
+      6000000.0,
+      6000.0
+    ],
+    "Transversal": [
+      525000.0,
+      525.0
+    ],
+    "Circumferential Bending": [
+      210000.0,
+      0
+    ],
+    "Transversal Bending": [
+      210000.0,
+      0
+    ]
+  },
+  "Default Pressure": 900000.0,
+  "Contact Material": {
+    "Coefficient of Friction": 0.9,
+    "Coefficient of Restitution": 0.1,
+    "Properties": {
+      "Young Modulus": 2000000.0,
+      "Poisson Ratio": 0.3
+    },
+    "Coefficients": {
+      "Normal Stiffness": 2e8,
+      "Normal Damping": 130.0,
+      "Tangential Stiffness": 1000000.0,
+      "Tangential Damping": 0
+    },
+    "Reference Divisions": 40
+  },
+  "Model Settings": {
+    "Follower Pressure": false,
+    "Area Weighted Lumping": false
+  },
+  "Numerical Settings": {
+    "Stiff": false
+  }
+}

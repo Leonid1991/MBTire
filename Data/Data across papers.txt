@@ -1,0 +1,32 @@
+# ======================= Set the simulation parameters =======================
+
+# Wakui 2011, Taable 1 (N/m, Ns/m)
+# k1 = 0.02e6, c1 = 70
+# k2 = 0.05e6, c2 = 175
+# k3 = 0.30e6, c3 = 30
+
+# Pinto thesis  Table 4-1 (N/m, Ns/m)
+# k = 0.1e6 - 1e6, damping factor = 0.01-0.05
+
+# Schmeitz thesis Table 3.4, p. 89 (N/m, Ns/m)
+# k = 0.3e6 - 5e6, c = 13.6-250, kB = 0.04e6-0.08e6
+
+# NASA report (https://ntrs.nasa.gov/api/citations/19800018802/downloads/19800018802.pdf?utm_source=chatgpt.com)
+# Table A1 (page 18)
+# k = 0.9e6 - 1.4e6, damping factor = 0.02-0.04, static test
+# k = 2.0e6 - 3.7e6, damping factor = 0.04-0.09 dynamic test
+
+
+# Stiffness analysis of passenger car tire using Nitrogen by Mhaske et al. (2016)
+# k = 0.15e6 - 0.21e6
+
+# Characterization of the vertical behavior of pneumatic tires by an Zijl (2022)                                                                                                                                                   
+# Table 3.1, Table 4.1
+# k = 0.15e6 - 0.21e6, c = 210
+
+# Modeling of Tire Vertical Behavior Using a Test Bench by ACOSTA et al. (2020)
+# Table 3
+# k = 0.18e6 - 0.2e6, c = 184-2224
+############################################################################################################
+############################################################################################################
+# Maximal stiffness of the problem from all data is k =  5e6, c = 5e4, kB = 1e4
