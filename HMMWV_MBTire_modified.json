@@ -22,7 +22,7 @@
     "Rim Radius": 0.29845
   },
   "Spring Properties": {
-    "Type": "Per Spring",
+    "Type": "Distributed",
     "Radial": [
       5750000.0,
       5750.0
@@ -61,8 +61,8 @@
     "Reference Divisions": 40
   },
   "Model Settings": {
-    "Follower Pressure": false,
-    "Area Weighted Lumping": false
+    "Follower Pressure": true,
+    "Area Weighted Lumping": true
   },
   "Numerical Settings": {
     "Stiff": false
