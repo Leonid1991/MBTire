@@ -21,10 +21,12 @@ initia_div = 40
 Load_list_kg = [902.9, 1358.7]
 
 division = 40
-step_size = 1e-5
+step_size = 5e-6
+Stiffness = False
+
 
 pressure = 9e5
-Stiffness = False
+surface_dim = 0.005
 threashhold = 0.004
 LoadSpeed = 0.005
 time_delay_length = 0.25 # time delay after contact for setteling the system
@@ -105,8 +107,7 @@ def main():
 
     # Set tire contact surface
     collision_family = 7
-    surface_dim = 0.0
-    # surface_dim = 0.01 # to compare with some oither experiments 
+    
     
     tire.SetContactSurfaceType(surface_type, surface_dim, collision_family)
 
