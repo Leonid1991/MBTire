@@ -9,7 +9,7 @@ import pychrono.pardisomkl as mkl          # at the top
 
 # =============================================================================
 veh.SetVehicleDataPath(chrono.GetChronoDataPath() + 'vehicle/')
-tire_json = "C:/Data/Tire Calibration/HMMWV_MBTire_modified.json"
+tire_json = "C:/Data/Chrono/Callibration/HMMWV_MBTire_modified.json"
 wheel_json = veh.GetVehicleDataFile("hmmwv/wheel/HMMWV_Wheel.json")
 simulation = True   
 Visualization = False
@@ -19,28 +19,29 @@ initia_div = 40
 # Load_list_kg = [902.9, 1358.7, 1812.3, 2251.1, 2704.5, 3165.8, 3614.3, 4069.9, 4501.1, 4509.8]
 Load_list_kg = [902.9, 1358.7]
 
-division = 80
+division = 40
 
 pressure = 9e5
 all = True
-
-div_coef = initia_div /division 
 
 if all:
     cr = 115e5
     cc = 3e6 
     ct = 105e4
-    cb = 105e3
-
+    ccb = 105e3
+    cct = 105e3
 else:
     stiff = 1e7
     cr = stiff 
     cc = stiff
     ct = stiff
-    cb = stiff * 1e-3 # standard
+    ccb = stiff * 1e-3 # standard
+    cct = stiff * 1e-3 # standard
+
+
 
 threashhold = 0.004
-LoadSpeed = 0.01
+LoadSpeed = 0.005
 step_size = 1e-5
 time_delay_length = 0.25 # time delay after contact for setteling the system
 avg_window = 1000   
@@ -60,16 +61,16 @@ E_contact = 2e6 # here it is initial values, but just to make sure it stays!!!!!
 tire_json_data["Contact Material"]["Properties"]["Young Modulus"] = E_contact
 
 # we need to adjust the spring properties based on the division factor 
-tire_json_data["Spring Properties"]["Radial"][0] = cr  * div_coef 
-tire_json_data["Spring Properties"]["Circumferential"][0] = cc / div_coef   
-tire_json_data["Spring Properties"]["Transversal"][0] = ct * div_coef # change it, because many spring do the same job
-tire_json_data["Spring Properties"]["Circumferential Bending"][0] = cb / div_coef
-tire_json_data["Spring Properties"]["Transversal Bending"][0] = cb / div_coef
+tire_json_data["Spring Properties"]["Radial"][0] = cr 
+tire_json_data["Spring Properties"]["Circumferential"][0] = cc
+tire_json_data["Spring Properties"]["Transversal"][0] = ct
+tire_json_data["Spring Properties"]["Circumferential Bending"][0] = ccb
+tire_json_data["Spring Properties"]["Transversal Bending"][0] = cct
 
 coef = 1e-3 # viscous 
-tire_json_data["Spring Properties"]["Radial"][1] = cr * coef * div_coef 
-tire_json_data["Spring Properties"]["Circumferential"][1] = cc * coef / div_coef
-tire_json_data["Spring Properties"]["Transversal"][1] = ct * coef * div_coef
+tire_json_data["Spring Properties"]["Radial"][1] = cr * coef
+tire_json_data["Spring Properties"]["Circumferential"][1] = cc * coef
+tire_json_data["Spring Properties"]["Transversal"][1] = ct * coef
 
 # visco = 1e3 # control visco separately
 # tire_json_data["Spring Properties"]["Radial"][1] = visco
@@ -116,8 +117,8 @@ def main():
     sys.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
 
     tire.SetStepsize(step_size)
-    #sys.SetSolverType(chrono.ChSolver.Type_PSOR)
-    sys.SetSolver(mkl.ChSolverPardisoMKL())    # instead of line 114
+    sys.SetSolverType(chrono.ChSolver.Type_PSOR)
+    #sys.SetSolver(mkl.ChSolverPardisoMKL())    # instead of line 114
 
     sys.SetTimestepperType(chrono.ChTimestepper.Type_EULER_IMPLICIT_PROJECTED)
     #sys.SetTimestepperType(chrono.ChTimestepper.Type_EULER_IMPLICIT_LINEARIZED)

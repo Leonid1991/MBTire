@@ -18,29 +18,29 @@
       0.12,
       0.1925
     ],
-    "Number Divisions": 80,
+    "Number Divisions": 40,
     "Rim Radius": 0.29845
   },
   "Spring Properties": {
-    "Type": "Distributed",
+    "Type": "Per Spring",
     "Radial": [
-      5750000.0,
-      5750.0
+      11500000.0,
+      11500.0
     ],
     "Circumferential": [
-      6000000.0,
-      6000.0
+      3000000.0,
+      3000.0
     ],
     "Transversal": [
-      525000.0,
-      525.0
+      1050000.0,
+      1050.0
     ],
     "Circumferential Bending": [
-      210000.0,
+      105000.0,
       0
     ],
     "Transversal Bending": [
-      210000.0,
+      105000.0,
       0
     ]
   },
@@ -53,7 +53,7 @@
       "Poisson Ratio": 0.3
     },
     "Coefficients": {
-      "Normal Stiffness": 2e8,
+      "Normal Stiffness": 200000000.0,
       "Normal Damping": 130.0,
       "Tangential Stiffness": 1000000.0,
       "Tangential Damping": 0
