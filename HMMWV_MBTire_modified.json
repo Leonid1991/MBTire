@@ -22,7 +22,7 @@
     "Rim Radius": 0.29845
   },
   "Spring Properties": {
-    "Type": "Per Spring",
+    "Type": "Distributed",
     "Radial": [
       11500000.0,
       11500.0
