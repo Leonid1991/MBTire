@@ -17,13 +17,21 @@ g = 9.8
 initia_div = 40
 ############################################################################################################
 # Load_list_kg = [902.9, 1358.7, 1812.3, 2251.1, 2704.5, 3165.8, 3614.3, 4069.9, 4501.1, 4509.8]
+# displacements= [0.0082, 0.0121, 0.0161, 0.0202, 0.0243, 0.0284, 0.0325, 0.0366, 0.0407, 0.0448]
 Load_list_kg = [902.9, 1358.7]
 
 division = 40
+step_size = 1e-5
 
 pressure = 9e5
-all = True
+Stiffness = False
+threashhold = 0.004
+LoadSpeed = 0.005
+time_delay_length = 0.25 # time delay after contact for setteling the system
+avg_window = 1000   
 
+'''
+all = False
 if all:
     cr = 115e5
     cc = 3e6 
@@ -31,23 +39,17 @@ if all:
     ccb = 105e3
     cct = 105e3
 else:
-    stiff = 1e7
-    cr = stiff 
-    cc = stiff
-    ct = stiff
-    ccb = stiff * 1e-3 # standard
-    cct = stiff * 1e-3 # standard
+'''
 
+stiff = 5e7
+cr = stiff
+cc = stiff  * 1e-1
+ct = stiff  * 1e-1
+ccb = stiff * 1e-3 # standard
+cct = stiff * 1e-3
 
-
-threashhold = 0.004
-LoadSpeed = 0.005
-step_size = 1e-5
-time_delay_length = 0.25 # time delay after contact for setteling the system
-avg_window = 1000   
 load_sum = 0.0
 disp_sum = 0.0
-
 # -------------------------------- Rewrite the JSON file  ------------------
 with open(tire_json, 'r') as f: # Open and load JSON content
     tire_json_data = json.load(f)
@@ -55,6 +57,7 @@ with open(tire_json, 'r') as f: # Open and load JSON content
 print(chrono.__file__)
 print(tire_json)
 
+tire_json_data["Numerical Settings"]["Stiff"] = Stiffness 
 tire_json_data["Default Pressure"] = pressure
 tire_json_data["Geometry"]["Number Divisions"] = division
 E_contact = 2e6 # here it is initial values, but just to make sure it stays!!!!!!!  
@@ -117,8 +120,11 @@ def main():
     sys.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
 
     tire.SetStepsize(step_size)
-    sys.SetSolverType(chrono.ChSolver.Type_PSOR)
-    #sys.SetSolver(mkl.ChSolverPardisoMKL())    # instead of line 114
+    if Stiffness:
+        sys.SetSolver(mkl.ChSolverPardisoMKL())    # instead of line 114
+    else:    
+        sys.SetSolverType(chrono.ChSolver.Type_PSOR)
+    
 
     sys.SetTimestepperType(chrono.ChTimestepper.Type_EULER_IMPLICIT_PROJECTED)
     #sys.SetTimestepperType(chrono.ChTimestepper.Type_EULER_IMPLICIT_LINEARIZED)
