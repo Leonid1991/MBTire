@@ -20,8 +20,8 @@ initia_div = 40
 # displacements= [0.0082, 0.0121, 0.0161, 0.0202, 0.0243, 0.0284, 0.0325, 0.0366, 0.0407, 0.0448]
 Load_list_kg = [902.9, 1358.7]
 
-division = 40
-step_size = 5e-6
+division = 80
+step_size = 1e-6
 Stiffness = False
 
 
@@ -30,7 +30,7 @@ surface_dim = 0.005
 threashhold = 0.004
 LoadSpeed = 0.005
 time_delay_length = 0.25 # time delay after contact for setteling the system
-avg_window = 1000   
+avg_window = 500   
 
 '''
 all = False
