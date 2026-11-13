@@ -1,14 +1,14 @@
 {
-  "Name": "HMMWV MB Tire",
+  "Name": "HMMWV MB Tire (Nokian Hakka Truck Trailer 385/55R22.5, buffed)",
   "Type": "Tire",
   "Template": "MBTire",
-  "Mass": 70.5,
+  "Mass": 57.0,
   "Geometry": {
     "Radius": [
       0.388,
-      0.49,
-      0.498,
-      0.49,
+      0.482,
+      0.483,
+      0.482,
       0.388
     ],
     "Offset": [
@@ -19,28 +19,28 @@
       0.1925
     ],
     "Number Divisions": 80,
-    "Rim Radius": 0.29845
+    "Rim Radius": 0.28575
   },
   "Spring Properties": {
     "Type": "Distributed",
     "Radial": [
-      50000000.0,
-      50000.0
+      5000000.0,
+      300.0
     ],
     "Circumferential": [
-      5000000.0,
-      5000.0
+      50000000.0,
+      300.0
     ],
     "Transversal": [
-      5000000.0,
-      5000.0
+      1500000.0,
+      300.0
     ],
     "Circumferential Bending": [
-      50000.0,
+      3000.0,
       0
     ],
     "Transversal Bending": [
-      50000.0,
+      10.0,
       0
     ]
   },
@@ -49,7 +49,7 @@
     "Coefficient of Friction": 0.9,
     "Coefficient of Restitution": 0.1,
     "Properties": {
-      "Young Modulus": 2000000.0,
+      "Young Modulus": 200000000.0,
       "Poisson Ratio": 0.3
     },
     "Coefficients": {
@@ -65,6 +65,6 @@
     "Area Weighted Lumping": true
   },
   "Numerical Settings": {
-    "Stiff": false
+    "Stiff": true
   }
 }

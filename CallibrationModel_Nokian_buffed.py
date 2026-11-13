@@ -3,88 +3,65 @@ import json
 import pychrono as chrono
 import pychrono.vehicle as veh
 import pychrono.irrlicht as irr
+import pychrono.pardisomkl as mkl   # CHANGED: Pardiso solver
 import math as m
 import time
-import pychrono.pardisomkl as mkl          # at the top
-
+import os
 # =============================================================================
 veh.SetVehicleDataPath(chrono.GetChronoDataPath() + 'vehicle/')
-tire_json = "C:/Data/Chrono/Callibration/HMMWV_MBTire_modified.json"
+# CHANGED: Radu's buffed Nokian tire (the tested tire) is the base file; it is only READ, never overwritten
+base_json = "C:/Data/Chrono/Callibration/HMMWV_MBTire_Nokian_Buffed_modified.json"
 wheel_json = veh.GetVehicleDataFile("hmmwv/wheel/HMMWV_Wheel.json")
 simulation = True   
 Visualization = False
 g = 9.8
-initia_div = 40
 ############################################################################################################
-# Load_list_kg = [902.9, 1358.7, 1812.3, 2251.1, 2704.5, 3165.8, 3614.3, 4069.9, 4501.1, 4509.8]
-# displacements= [0.0082, 0.0121, 0.0161, 0.0202, 0.0243, 0.0284, 0.0325, 0.0366, 0.0407, 0.0448]
-Load_list_kg = [902.9, 1358.7]
+Load_list_kg = [902.9, 1358.7, 1812.3, 2251.1, 2704.5, 3165.8, 3614.3, 4069.9, 4501.1] 
+# Load_list_kg = [902.9, 1358.7]
 
-division = 80
-step_size = 1e-6
-Stiffness = False
-
-
-pressure = 9e5
-surface_dim = 0.005
 threashhold = 0.004
-LoadSpeed = 0.005
+LoadSpeed = 0.05
+step_size = 1e-5               
 time_delay_length = 0.25 # time delay after contact for setteling the system
-avg_window = 500   
-
-'''
-all = False
-if all:
-    cr = 115e5
-    cc = 3e6 
-    ct = 105e4
-    ccb = 105e3
-    cct = 105e3
-else:
-'''
-
-stiff = 5e7
-cr = stiff
-cc = stiff  * 1e-1
-ct = stiff  * 1e-1
-ccb = stiff * 1e-3 # standard
-cct = stiff * 1e-3
-
+avg_window = max(1, round(0.005 / step_size))* 10
 load_sum = 0.0
 disp_sum = 0.0
+
+
+# ------------------- read file -------------------
+with open(base_json, 'r') as f:
+    d = json.load(f)
+sp = d["Spring Properties"]
+E_contact = d["Contact Material"]["Properties"]["Young Modulus"]
+cr,  cr_d = sp["Radial"]                    # stiffness, damping
+cc,  cc_d = sp["Circumferential"]
+ct,  ct_d = sp["Transversal"]
+ccb, _    = sp["Circumferential Bending"]
+cct, _    = sp["Transversal Bending"]
+division = d["Geometry"]["Number Divisions"]
+pressure = d["Default Pressure"]          # still needed: main() prints it in the results
+
+# ------------------- modifications file -------------------
+
+
+division = division * 2
+
 # -------------------------------- Rewrite the JSON file  ------------------
-with open(tire_json, 'r') as f: # Open and load JSON content
-    tire_json_data = json.load(f)
+d["Default Pressure"] = pressure
+d["Geometry"]["Number Divisions"] = division
+d["Contact Material"]["Properties"]["Young Modulus"] = E_contact
 
-print(chrono.__file__)
-print(tire_json)
+d["Spring Properties"]["Radial"]          = [cr, cr_d]
+d["Spring Properties"]["Circumferential"] = [cc, cc_d]
+d["Spring Properties"]["Transversal"]     = [ct, ct_d]
+d["Spring Properties"]["Circumferential Bending"][0] = ccb
+d["Spring Properties"]["Transversal Bending"][0]     = cct
 
-tire_json_data["Numerical Settings"]["Stiff"] = Stiffness 
-tire_json_data["Default Pressure"] = pressure
-tire_json_data["Geometry"]["Number Divisions"] = division
-E_contact = 2e6 # here it is initial values, but just to make sure it stays!!!!!!!  
-tire_json_data["Contact Material"]["Properties"]["Young Modulus"] = E_contact
 
-# we need to adjust the spring properties based on the division factor 
-tire_json_data["Spring Properties"]["Radial"][0] = cr 
-tire_json_data["Spring Properties"]["Circumferential"][0] = cc
-tire_json_data["Spring Properties"]["Transversal"][0] = ct
-tire_json_data["Spring Properties"]["Circumferential Bending"][0] = ccb
-tire_json_data["Spring Properties"]["Transversal Bending"][0] = cct
+tire_json = os.path.join(os.path.dirname(base_json), "HMMWV_MBTire_Nokian_Buffed_run.json")
+with open(tire_json, 'w') as f: # Save to the run copy
+    json.dump(d, f, indent=2)
 
-coef = 1e-3 # viscous 
-tire_json_data["Spring Properties"]["Radial"][1] = cr * coef
-tire_json_data["Spring Properties"]["Circumferential"][1] = cc * coef
-tire_json_data["Spring Properties"]["Transversal"][1] = ct * coef
-
-# visco = 1e3 # control visco separately
-# tire_json_data["Spring Properties"]["Radial"][1] = visco
-# tire_json_data["Spring Properties"]["Circumferential"][1] = visco    
-# tire_json_data["Spring Properties"]["Transversal"][1] = visco
-
-with open(tire_json, 'w') as f: # Save back to file (overwrite)
-    json.dump(tire_json_data, f, indent=2)
-     
 # ------------------------------- Constants --------------------------------
 disp = 0
 nominalLoad_fake = 100000000 * g # just not to leave the programm to quickly 
@@ -104,10 +81,10 @@ def main():
 
     wheel = veh.ReadWheelJSON(wheel_json)
     tire = veh.ReadTireJSON(tire_json)
-
     # Set tire contact surface
     collision_family = 7
-    
+    surface_dim = 0.02   # CHANGED: as in Radu's rig
+    # surface_dim = 0.01 # to compare with some oither experiments 
     
     tire.SetContactSurfaceType(surface_type, surface_dim, collision_family)
 
@@ -121,20 +98,18 @@ def main():
     sys.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
 
     tire.SetStepsize(step_size)
-    if Stiffness:
-        sys.SetSolver(mkl.ChSolverPardisoMKL())    # instead of line 114
-    else:    
-        sys.SetSolverType(chrono.ChSolver.Type_PSOR)
-    
-
-    sys.SetTimestepperType(chrono.ChTimestepper.Type_EULER_IMPLICIT_PROJECTED)
-    #sys.SetTimestepperType(chrono.ChTimestepper.Type_EULER_IMPLICIT_LINEARIZED)
+    # CHANGED: Radu's settings for a stiff MB tire
+    sys.SetTimestepperType(chrono.ChTimestepper.Type_EULER_IMPLICIT_LINEARIZED)
 
     num_threads_chrono = 4     # Number of OpenMP threads used in Chrono (SCM ray-casting and FEA)
     num_threads_collision = 4  # Number of threads used in collision detection
     num_threads_eigen = 1      # Number of threads used by Eigen
-    num_threads_pardiso = 4    # Number of threads used by PardisoMKL
+    num_threads_pardiso = 8    # Number of threads used by PardisoMKL   # CHANGED: 8 as in Radu's YAML
     sys.SetNumThreads(num_threads_chrono, num_threads_collision, num_threads_eigen)
+
+    solver = mkl.ChSolverPardisoMKL(num_threads_pardiso)   # CHANGED: Pardiso with locked sparsity (was PSOR)
+    solver.LockSparsityPattern(True)
+    sys.SetSolver(solver)
 
     print("Create test rig")
     rig = veh.ChTireStaticTestRig(wheel, tire, sys)
@@ -143,11 +118,12 @@ def main():
     rig.SetTireStepsize(step_size)
     rig.SetTireVisualizationType(chrono.VisualizationType_MESH)
     # Set rig options
-    rig.SetPlateMaterialProperties(0.8, 0, 2e7)
+    rig.SetPlateMaterialProperties(0.8, 0, 2e9)   # CHANGED: plate E 2e9 (Radu)
     # Set test parameters
     rig.SetNominalRadialLoad(nominalLoad_fake)
     rig.SetStateTransitionDelay(0.2)
     rig.SetRadialLoadSpeed(LoadSpeed)
+    rig.SetDropSpeed(0.1)
     rig.SetLongitudinalLoadSpeed(0.1)
     rig.SetLateralLoadSpeed(0.1)
     rig.SetTorsionalLoadSpeed(0.1)
@@ -257,7 +233,7 @@ def main():
     step_time = timer.GetTimeSeconds()
 
 
-surface_type = veh.ChTire.ContactSurfaceType_TRIANGLE_MESH # Tire contact model (nodes or faces)
+surface_type = veh.ChTire.ContactSurfaceType_NODE_CLOUD # CHANGED: as in Radu's rig YAML (was TRIANGLE_MESH)
 test_mode = veh.ChTireStaticTestRig.Mode_TEST_R # Test mode
 
 debug_output = False
@@ -265,3 +241,5 @@ start = time.perf_counter()
 main()
 end = time.perf_counter()
 print(f"Total run time: {end - start:.2f} seconds")
+
+
