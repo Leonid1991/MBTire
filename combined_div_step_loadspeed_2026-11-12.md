@@ -47,6 +47,7 @@ Same model in both: Radu's buffed Nokian JSON (900 kPa, Distributed, E 2e8, Refe
 | 80 | 1e-4 | 0.1 | 500 (5000) | Leonid | 8.86 | 12.46 | 16.00 | 19.38 | 22.81 | 26.28 | 29.52 | 32.73 | 35.75 | 1.83 | 0.70 | 146 s | 4/4/8 |
 | 80 | 5e-5 | 0.01 | 5 (100) | Claude | 10.61 | 13.87 | 17.12 | 20.32 | 23.55 | 26.58 | 29.60 | 32.76 | 35.82 | 0.18 | 1.29 | 558 s | 1/1/1 |
 | 80 | 1e-5 | 0.01 | 5 (500) | Claude | 10.59 | 13.85 | 17.11 | 20.31 | 23.53 | 26.56 | 29.58 | 32.74 | 35.81 | 0.20 | 1.28 | 3147 s | 1/1/1 |
+| 80 | 1e-5 | 0.05 | 50 (5000) | Leonid | 10.58 | 13.84 | 17.10 | 20.30 | 23.51 | 26.55 | 29.57 | 32.74 | 35.80 | 0.21 | 1.28 | 2451 s | 4/4/8 |
 | 120 | 4e-4 | 0.01 | 4.8 (12) | Claude | blows up | | | | | | | | | | | 37 s | 1/1/1 |
 | 120 | 2e-4 | 0.01 | 5 (25) | Claude | blows up | | | | | | | | | | | 121 s | 1/1/1 |
 | 120 | 1e-4 | 0.005 | 5 (50) | Leonid | 10.68 | 14.02 | 17.14 | 20.15 | 23.41 | 26.60 | 29.68 | 32.77 | 35.70 | 0.11 | 1.31 | 1755 s | 4/4/8 |
@@ -71,6 +72,7 @@ Same model in both: Radu's buffed Nokian JSON (900 kPa, Distributed, E 2e8, Refe
    - **Window 5000 steps (0.5 s):** the first points drop by about 1.7 mm (8.86 vs 10.60 at 80 div) and 80 and 120 div give the same curve, so the window, not the model, sets those points. Too long. Its lower RMS vs data is not a better fit.
 4. **Division:** 40 div is up to 1.4 mm from the reference at LoadSpeed ≤ 0.01; 60 div 0.36 mm; 80 div 0.19 mm; 120 div at 1e-4 0.12 mm.
 5. **Chosen (13 Nov, replaces 12 Nov's LoadSpeed 0.02):** 80 div, step 1e-4, LoadSpeed 0.05, window 50 ms (500 steps): 0.20 mm from the reference, within 0.02 mm of LoadSpeed 0.01, 169 s on Leonid's PC.
+   - **Last check (Leonid, 13 Nov):** the chosen set at step 1e-5 (window still 50 ms = 5000 steps) is within 0.01 mm of step 1e-4 at every load, and took 2451 s against 169 s. So step 1e-4 is converged for this set too.
 
 CSV of the same table: combined_div_step_loadspeed_2026-11-12.csv
 
