@@ -21,9 +21,9 @@ Load_list_kg = [902.9, 1358.7, 1812.3, 2251.1, 2704.5, 3165.8, 3614.3, 4069.9, 4
 
 threashhold = 0.004
 LoadSpeed = 0.05
-step_size = 1e-4               
+step_size = 2e-4               
 time_delay_length = 0.25 # time delay after contact for setteling the system
-avg_window = max(1, round(0.005 / step_size))* 10
+avg_window = max(1, round(0.005 / step_size))
 load_sum = 0.0
 disp_sum = 0.0
 
