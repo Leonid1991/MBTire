@@ -45,7 +45,9 @@ pressure = d["Default Pressure"]          # still needed: main() prints it in th
 
 
 division = division * 2
-
+cc  = 1e8    # Circumferential
+ct  = 5e6    # Transversal
+ccb = 1e4    # Circumferential Bending
 # -------------------------------- Rewrite the JSON file  ------------------
 d["Default Pressure"] = pressure
 d["Geometry"]["Number Divisions"] = division

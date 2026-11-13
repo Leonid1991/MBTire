@@ -116,3 +116,29 @@ To check that 0.05 is not only fine for the base springs: four corners of the sp
 |                                   | 0.05      | 12.18 | 16.44  | 20.80  | 24.82  | 28.96  | 33.28  | 37.62  | 41.85  | 45.52  | 0.02                  | 135 s |
 
 - In all six cases 0.05 is within 0.05 mm of 0.01 at every load and 2.3 to 2.9 times faster. The largest gaps (0.05 mm) are in the two cases with soft transversal springs (kT 5e5), at the last loads.
+
+## Final set on the corner cases (Claude, 13 Nov)
+
+Final set = step 1e-4, LoadSpeed 0.05, window 50 ms (500 steps). Compared with LoadSpeed 0.01 (window 5 ms) at 80 div, and at 120 div for the two extreme corners. Deflection in mm, 1 thread per run, 4 runs side by side.
+
+| case                              | run                                            | 902.9 | 1358.7 | 1812.3 | 2251.1 | 2704.5 | 3165.8 | 3614.3 | 4069.9 | 4501.1 | max diff        | time  |
+|-----------------------------------|------------------------------------------------|-------|--------|--------|--------|--------|--------|--------|--------|--------|-----------------|-------|
+| all low: kC 2e7, kT 5e5, kBC 1e3  | 80 div, LS 0.01, 5 ms                          | 14.32 | 18.59  | 22.69  | 26.70  | 30.68  | 34.54  | 38.36  | 42.31  | 46.13  |                 | 376 s |
+|                                   | 80 div, final set                              | 14.28 | 18.58  | 22.68  | 26.68  | 30.66  | 34.52  | 38.33  | 42.27  | 46.08  | 0.05 vs LS 0.01 | 147 s |
+|                                   | 120 div, final set                             | 14.36 | 18.70  | 22.67  | 26.58  | 30.59  | 34.48  | 38.32  | 42.34  | 46.02  | 0.12 vs 80 div  | 214 s |
+| all high: kC 1e8, kT 5e6, kBC 1e4 | 80 div, LS 0.01, 5 ms                          | 8.02  | 10.35  | 12.69  | 15.01  | 17.47  | 20.05  | 22.38  | 24.62  | 26.68  |                 | 246 s |
+|                                   | 80 div, final set                              | 8.00  | 10.34  | 12.69  | 15.01  | 17.47  | 20.03  | 22.36  | 24.60  | 26.67  | 0.02 vs LS 0.01 | 128 s |
+|                                   | 80 div, final set, Leonid's PC (4/4/8 threads) | 8.00  | 10.34  | 12.69  | 15.01  | 17.47  | 20.03  | 22.36  | 24.60  | 26.67  | 0.00 vs Claude  | 185 s |
+|                                   | 120 div, final set                             | 8.01  | 10.47  | 12.80  | 15.09  | 17.48  | 19.72  | 21.97  | 24.38  | 26.75  | 0.39 vs 80 div  | 179 s |
+| kC 2e7, kT 5e6, kBC 1e3           | 80 div, LS 0.01, 5 ms                          | 13.13 | 16.18  | 19.11  | 21.94  | 24.91  | 27.67  | 30.43  | 33.35  | 36.23  |                 | 311 s |
+|                                   | 80 div, final set                              | 13.10 | 16.18  | 19.10  | 21.94  | 24.88  | 27.67  | 30.43  | 33.35  | 36.23  | 0.03 vs LS 0.01 | 134 s |
+| kC 1e8, kT 5e5, kBC 1e4           | 80 div, LS 0.01, 5 ms                          | 10.69 | 14.52  | 18.35  | 22.07  | 25.94  | 29.64  | 33.14  | 36.83  | 40.39  |                 | 346 s |
+|                                   | 80 div, final set                              | 10.66 | 14.50  | 18.35  | 22.07  | 25.92  | 29.61  | 33.12  | 36.79  | 40.34  | 0.05 vs LS 0.01 | 150 s |
+| base springs, 700 kPa             | 80 div, LS 0.01, 5 ms                          | 11.51 | 15.35  | 19.25  | 23.01  | 26.63  | 30.41  | 34.19  | 38.15  | 41.73  |                 | 353 s |
+|                                   | 80 div, final set                              | 11.51 | 15.35  | 19.25  | 22.99  | 26.62  | 30.40  | 34.19  | 38.15  | 41.71  | 0.02 vs LS 0.01 | 144 s |
+| base springs, 600 kPa             | 80 div, LS 0.01, 5 ms                          | 12.19 | 16.45  | 20.82  | 24.83  | 28.97  | 33.29  | 37.63  | 41.86  | 45.54  |                 | 381 s |
+|                                   | 80 div, final set                              | 12.18 | 16.45  | 20.81  | 24.82  | 28.96  | 33.29  | 37.62  | 41.85  | 45.53  | 0.01 vs LS 0.01 | 150 s |
+
+- **Same case on both machines:** Leonid's PC gives the same all-high numbers as Claude's build at every load (to 0.01 mm).
+- **Final set vs LoadSpeed 0.01:** within 0.05 mm in all six cases, so the speed-up holds over the whole spring range and at 600/700 kPa.
+- **80 vs 120 div:** all-low corner within 0.12 mm; all-high corner up to 0.39 mm (21.97 vs 22.36 at 3614.3 kg, 80 div deflects more). At the base springs it is 0.19 mm. The difference changes sign along the curve, so it is not a constant shift; likely mesh steps as nodes come into contact, worse for the stiff tire with its short contact patch (inferred).
